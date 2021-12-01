@@ -1,0 +1,18 @@
+extends layout
+
+block content
+
+  h1 Brand: #{breadbrand.title}
+
+  div(style='margin-left:20px;margin-top:20px')
+
+    h4 Breads carried here
+
+    dl
+      each bread in specificbreads
+        dt
+          a(href=bread.url) #{bread.type}
+        dd #{bread.details}
+
+      else
+        p This genre has no books

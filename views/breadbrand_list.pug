@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  h1= title
+
+  ul
+    each brand in breadbrand_list
+      li
+        a(href=brand.url) #{brand.title}
+        |  #{brand.description}
+
+    else
+      li There are no brands of bread :(
