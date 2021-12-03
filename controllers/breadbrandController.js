@@ -1,5 +1,7 @@
 var BreadBrand = require("../models/breadbrands");
 var SpecificBread = require("../models/specificbreads");
+const password = require("../password");
+const { body, validationResult } = require("express-validator");
 
 var async = require("async");
 
@@ -76,13 +78,68 @@ exports.breadbrand_detail = function (req, res) {
 
 // Display Bread brand create form on GET.
 exports.breadbrand_create_get = function (req, res) {
-  res.send("NOT IMPLEMENTED: Bread brand create GET");
+  res.render("breadbrand_form", {
+    title: "Add a brand of bread!",
+  });
 };
 
 // Handle Bread brand create on POST.
-exports.breadbrand_create_post = function (req, res) {
-  res.send("NOT IMPLEMENTED: Bread brand create POST");
-};
+exports.breadbrand_create_post = [
+  // Validate and santize the name field.
+  body("title", "Brand name required").trim().isLength({ min: 1 }).escape(),
+  body("description", "A description for the bread must be set")
+    .trim()
+    .escape(),
+  body("password", "A proper password must be set").trim().escape(),
+
+  // Process request after validation and sanitization.
+  (req, res, next) => {
+    // Extract the validation errors from a request.
+    const errors = validationResult(req);
+    // Create a genre object with escaped and trimmed data.
+    var breadbrand = new BreadBrand({
+      title: req.body.title,
+      description: req.body.description,
+    });
+
+    if (!errors.isEmpty() || req.body.password !== password) {
+      // There are errors. Render the form again with sanitized values/error messages.
+
+      if (err) {
+        return next(err);
+      }
+      res.render("breadbrand_form", {
+        title: "I think there was a mistake..?",
+        breadbrand: breadbrand,
+        errors: errors.array(),
+      });
+      return;
+    } else {
+      // Data from form is valid.
+      // Check if Genre with same name already exists.
+      BreadBrand.findOne({
+        title: req.body.title,
+      }).exec(function (err, found_same_bread) {
+        if (err) {
+          return next(err);
+        }
+
+        if (found_same_bread) {
+          // Bread exists, redirect to its detail page.
+          res.redirect(found_same_bread.url);
+        } else {
+          breadbrand.save(function (err) {
+            if (err) {
+              return next(err);
+            }
+            // Bread saved. Redirect to bread detail page.
+            res.redirect(breadbrand.url);
+          });
+        }
+      });
+    }
+  },
+];
 
 // Display Bread brand delete form on GET.
 exports.breadbrand_delete_get = function (req, res) {

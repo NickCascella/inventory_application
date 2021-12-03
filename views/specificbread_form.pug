@@ -1,0 +1,52 @@
+extends layout
+
+block content
+  h1 #{title}
+
+  form(method='POST' action='')
+    div.form-group
+      label(for='type') Bread type:
+      input#type.form-control(type='text', placeholder='Whole Wheat, Multi Grain, etc...' name='type' required='true' value=(undefined===specificbread ? '' : specificbread.type))
+      label(for='details') Brand bread description:
+      input#details.form-control(type='text', placeholder='Dempster\'s 100% Whole Wheat Bread is delicious any time of the day. It’s made with our simplest ingredients...' name='details' required='true' value=(undefined===specificbread ? '' : specificbread.details))
+      label(for='brand') Brand:
+      select#brand.form-control(type='select' placeholder='Select Brand' name='brand' required='true' )
+        - brandnames.sort(function(a, b) {let textA = a.brand.title.toUpperCase(); let textB = b.brand.title.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;});
+        for obj in brandnames
+          if specificbread
+            //- Handle GET form, where book.author is an object, and POST form, where it is a string.
+            option(
+              value=obj.brand._id
+              selected=(
+                obj.brand._id.toString()==obj.brand._id
+                || obj.brand._id.toString()==obj.brand.id
+              ) ? 'selected' : false
+            ) #{obj.brand.title}
+          else
+            option(value=obj.brand._id) #{obj.brand.title}
+
+     
+      label(for='weight') Weight in grams? (as is sold, i.e by piece or entire package):
+      input#weight.form-control(type='number', placeholder='675, 300, 500, etc...' name='weight' required='true' value=(undefined===specificbread ? '' : specificbread.weight))
+      label(for='price') Price per, in CAD:
+      input#price.form-control(type='number', placeholder='3.00, 5.25, 2.90, etc...' name='price' required='true' value=(undefined===specificbread ? '' : specificbread.price))
+      label(for='quantity') How much is availible?:
+      input#quantity.form-control(type='number', placeholder='30, 20, 55, etc...' name='quantity' required='true' value=(undefined===specificbread ? '' : specificbread.quantity))
+      label(for='instock') Item availible for sale?:
+      input#instock.form-control(type='checkbox' name='instock' checked=(undefined===specificbread ? false : specificbread.instock))
+      label(for='moreInfo') More Information URL?:
+      input#brand.form-control(type='text' placeholder='https://dempsters.ca/products/wheat-grain-bread... ' name='moreInfo' value=(undefined===specificbread ? '' : specificbread.moreInfo))
+      label(for='password') Password:
+      if specificbread !== undefined
+        div Incorrect password
+      input#password.form-control(type='password' name='password' required="true")
+
+    button.btn.btn-primary(type='submit') Submit
+
+  if errors
+   ul
+    for error in errors
+      li!= error.msg
+
+//-       label(for='brand') Brand:
+ input#brand.form-control(type='text', placeholder='Dempster\'s, Villaggio, etc... ' name='brand' value=(undefined===specificbread ? '' : specificbread.brand))

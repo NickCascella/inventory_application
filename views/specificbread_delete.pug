@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1 #{title}: #{specificbread.brand.title} - #{specificbread.type}
+
+    p Do you really want to delete this Author?
+
+    form(method='POST' action='')
+      div.form-group
+        input#specificbreadid.form-control(type='hidden',name='specificbreadid', required='true', value=specificbread._id )
+
+      button.btn.btn-primary(type='submit') Delete
