@@ -1,4 +1,5 @@
 var SpecificBread = require("../models/specificbreads");
+var BreadBrand = require("../models/breadbrands");
 const password = require("../password");
 const { body, validationResult } = require("express-validator");
 
@@ -37,26 +38,45 @@ exports.specificbread_detail = function (req, res) {
 
 // Display Specific bread create form on GET.
 exports.specificbread_create_get = function (req, res) {
-  SpecificBread.find()
-    .populate("brand")
-    .exec(function (err, specificbread) {
-      if (err) {
-        return next(err);
-      }
-      let arrayForSpecificBreadBrands = [];
-      let titles = [];
-      specificbread.map((specificbreadObj) => {
-        if (!titles.includes(specificbreadObj.brand.title)) {
-          titles.push(specificbreadObj.brand.title);
-          arrayForSpecificBreadBrands.push(specificbreadObj);
-        }
-      });
+  // async.parallel(
+  //   {
+  //     specificbreads: function (callback) {
+  //       SpecificBread.find().populate("brand").exec(callback);
+  //     },
+  //     breadbrands: function (callback) {
+  //       BreadBrands.find(callback);
+  //     },
+  //   },
+  //   function (err, results) {
+  //     if (err) {
+  //       return next(err);
+  //     }
+  //     res.render("book_form", {
+  //       title: "Create Book",
+  //       authors: results.authors,
+  //       genres: results.genres,
+  //     });
+  //   }
+  // );
 
-      res.render("specificbread_form", {
-        title: "Add a bread to a brand!",
-        brandnames: arrayForSpecificBreadBrands,
-      });
+  BreadBrand.find().exec(function (err, breadbrand) {
+    if (err) {
+      return next(err);
+    }
+    let arrayForSpecificBreadBrands = [];
+    let titles = [];
+    breadbrand.map((breadbrand) => {
+      if (!titles.includes(breadbrand.title)) {
+        titles.push(breadbrand.title);
+        arrayForSpecificBreadBrands.push(breadbrand);
+      }
     });
+    console.log(titles);
+    res.render("specificbread_form", {
+      title: "Add a bread to a brand!",
+      brandnames: arrayForSpecificBreadBrands,
+    });
+  });
 };
 
 // Handle Specific bread create on POST.
@@ -97,7 +117,7 @@ exports.specificbread_create_post = [
 
     if (!errors.isEmpty() || req.body.password !== password) {
       // There are errors. Render the form again with sanitized values/error messages.
-      console.log(specificbread);
+
       SpecificBread.find()
         .populate("brand")
         .exec(function (err, specificbreadforlist) {
@@ -160,7 +180,7 @@ exports.specificbread_delete_get = function (req, res, next) {
       }
       if (results === null) {
         // No results.
-        res.redirect("/catalog/specificbread");
+        res.redirect("/catalog/specificbreads");
       }
       // Successful, so render.
       res.render("specificbread_delete", {
@@ -171,8 +191,36 @@ exports.specificbread_delete_get = function (req, res, next) {
 };
 
 // Handle Specific bread delete on POST.
-exports.specificbread_delete_post = function (req, res) {
-  res.send("NOT IMPLEMENTED: Specific bread delete POST");
+exports.specificbread_delete_post = function (req, res, next) {
+  body("password", "A proper password must be set").trim().escape();
+  SpecificBread.findById(req.params.id)
+    .populate("brand")
+    .exec(function (err, results) {
+      if (err) {
+        return next(err);
+      }
+      if (req.body.password === password) {
+        SpecificBread.findByIdAndRemove(
+          req.body.specificbreadid,
+          function deleteSpecificBread(err) {
+            if (err) {
+              return next(err);
+            }
+            // Success - go to author list
+            res.redirect("/catalog/specificbreads");
+          }
+        );
+      } else {
+        const errors = {
+          incorrectPassword: "Incorrect Password",
+        };
+        res.render("specificbread_delete", {
+          title: "Delete this bread.",
+          specificbread: results,
+          errors: errors,
+        });
+      }
+    });
 };
 
 // Display Specific bread update form on GET.

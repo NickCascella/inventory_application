@@ -1,9 +1,9 @@
 extends layout
 
 block content
-  h1 #{title}: #{specificbread.brand.title} - #{specificbread.type}
+  h1 #{title}: #{breadbrand.title}
 
-    p Do you really want to delete this bread?
+    p Do you really want to delete this brand and all its associated breads?
 
     form(method='POST' action='')
       label(for='password') Password:
@@ -11,6 +11,6 @@ block content
         div #{errors.incorrectPassword}
       input#password.form-control(type='password' name='password' required="true")
       div.form-group
-        input#specificbreadid.form-control(type='hidden',name='specificbreadid', required='true', value=specificbread._id )
+        input#breadbrandid.form-control(type='hidden',name='breadbrandid', required='true', value=breadbrand._id )
 
       button.btn.btn-primary(type='submit') Delete

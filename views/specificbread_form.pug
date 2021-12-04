@@ -11,7 +11,7 @@ block content
       input#details.form-control(type='text', placeholder='Dempster\'s 100% Whole Wheat Bread is delicious any time of the day. It’s made with our simplest ingredients...' name='details' required='true' value=(undefined===specificbread ? '' : specificbread.details))
       label(for='brand') Brand:
       select#brand.form-control(type='select' placeholder='Select Brand' name='brand' required='true' )
-        - brandnames.sort(function(a, b) {let textA = a.brand.title.toUpperCase(); let textB = b.brand.title.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;});
+        - brandnames.sort(function(a, b) {let textA = a.title.toUpperCase(); let textB = b.title.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;});
         for obj in brandnames
           if specificbread
             //- Handle GET form, where book.author is an object, and POST form, where it is a string.
@@ -23,7 +23,7 @@ block content
               ) ? 'selected' : false
             ) #{obj.brand.title}
           else
-            option(value=obj.brand._id) #{obj.brand.title}
+            option(value=obj._id) #{obj.title}
 
      
       label(for='weight') Weight in grams? (as is sold, i.e by piece or entire package):

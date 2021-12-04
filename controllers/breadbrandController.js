@@ -16,7 +16,6 @@ exports.index = function (req, res) {
       },
     },
     function (err, results) {
-      console.log(results);
       res.render("index", {
         title: "Bread.",
         error: err,
@@ -105,9 +104,6 @@ exports.breadbrand_create_post = [
     if (!errors.isEmpty() || req.body.password !== password) {
       // There are errors. Render the form again with sanitized values/error messages.
 
-      if (err) {
-        return next(err);
-      }
       res.render("breadbrand_form", {
         title: "I think there was a mistake..?",
         breadbrand: breadbrand,
@@ -142,13 +138,56 @@ exports.breadbrand_create_post = [
 ];
 
 // Display Bread brand delete form on GET.
-exports.breadbrand_delete_get = function (req, res) {
-  res.send("NOT IMPLEMENTED: Bread brand delete GET");
+exports.breadbrand_delete_get = function (req, res, next) {
+  BreadBrand.findById(req.params.id).exec(function (err, results) {
+    if (err) {
+      return next(err);
+    }
+    if (results === null) {
+      // No results.
+      res.redirect("/catalog/breadbrands");
+    }
+    // Successful, so render.
+    res.render("breadbrand_delete", {
+      title: "Delete this brand?",
+      breadbrand: results,
+    });
+  });
 };
 
 // Handle Bread brand delete on POST.
-exports.breadbrand_delete_post = function (req, res) {
-  res.send("NOT IMPLEMENTED: Bread brand delete POST");
+exports.breadbrand_delete_post = function (req, res, next) {
+  body("password", "A proper password must be set").trim().escape();
+  if (req.body.password === password) {
+    async.parallel(
+      {
+        breadbrand: function (callback) {
+          BreadBrand.findByIdAndRemove(req.body.breadbrandid).exec(callback);
+        },
+
+        specificbread: function (callback) {
+          SpecificBread.deleteMany({ brand: req.body.breadbrandid }).exec(
+            callback
+          );
+        },
+      },
+      function (err, results) {
+        if (err) {
+          return next(err);
+        }
+        res.redirect("/catalog/breadbrands");
+      }
+    );
+  } else {
+    const errors = {
+      incorrectPassword: "Incorrect Password",
+    };
+    res.render("breadbrand_delete", {
+      title: "Unable to delete",
+      breadbrand: results,
+      errors: errors,
+    });
+  }
 };
 
 // Display Bread brand update form on GET.
