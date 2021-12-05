@@ -16,15 +16,14 @@ block content
           if specificbread
             //- Handle GET form, where book.author is an object, and POST form, where it is a string.
             option(
-              value=obj.brand._id
+              value=obj._id
               selected=(
-                obj.brand._id.toString()==obj.brand._id
-                || obj.brand._id.toString()==obj.brand.id
+                obj._id.toString()==specificbread.brand._id
+                || obj._id.toString()==specificbread.brand
               ) ? 'selected' : false
-            ) #{obj.brand.title}
+            ) #{obj.title}
           else
             option(value=obj._id) #{obj.title}
-
      
       label(for='weight') Weight in grams? (as is sold, i.e by piece or entire package):
       input#weight.form-control(type='number', placeholder='675, 300, 500, etc...' name='weight' required='true' value=(undefined===specificbread ? '' : specificbread.weight))

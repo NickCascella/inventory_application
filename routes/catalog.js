@@ -4,7 +4,7 @@ var router = express.Router();
 // Require controller modules.
 var breadbrand_controller = require("../controllers/breadbrandController");
 var specificbread_controller = require("../controllers/specificbreadController");
-
+var shoppingcart_controller = require("../controllers/shoppingcartController");
 /// BOOK ROUTES ///
 
 // GET catalog home page.
@@ -72,6 +72,16 @@ router.post(
   specificbread_controller.specificbread_delete_post
 );
 
+router.post(
+  "/specificbread/:id/addtocart",
+  specificbread_controller.specificbread_add_to_cart
+);
+
+router.post(
+  "/specificbread/:id/removefromcart",
+  specificbread_controller.specificbread_remove_from_cart
+);
+
 // GET request to update specificbread.
 router.get(
   "/specificbread/:id/update",
@@ -89,5 +99,7 @@ router.get("/specificbread/:id", specificbread_controller.specificbread_detail);
 
 // GET request for list of all specificbreads.
 router.get("/specificbreads", specificbread_controller.specificbread_list);
+
+router.get("/shoppingcart", shoppingcart_controller.view_cart);
 
 module.exports = router;

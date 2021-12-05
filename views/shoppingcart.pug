@@ -1,0 +1,17 @@
+extends layout
+
+
+block content
+  h1= title
+
+  ul
+    each product in shoppingcart
+      li
+        a(href=product.item.url) #{product.item.brand.title} 
+        |  #{product.item.type}
+        input(type="number" value=`${product.quantity}` min=`0` max=`${product.item.quantity}` )
+        form(method='POST' action=`/catalog/specificbread/${product._id}/removefromcart`)
+            button(type="submit") Remove from cart
+
+    else
+      li There are no items in the shopping cart :(

@@ -2,7 +2,6 @@ var BreadBrand = require("../models/breadbrands");
 var SpecificBread = require("../models/specificbreads");
 const password = require("../password");
 const { body, validationResult } = require("express-validator");
-
 var async = require("async");
 
 exports.index = function (req, res) {
@@ -103,7 +102,6 @@ exports.breadbrand_create_post = [
 
     if (!errors.isEmpty() || req.body.password !== password) {
       // There are errors. Render the form again with sanitized values/error messages.
-
       res.render("breadbrand_form", {
         title: "I think there was a mistake..?",
         breadbrand: breadbrand,
@@ -112,7 +110,6 @@ exports.breadbrand_create_post = [
       return;
     } else {
       // Data from form is valid.
-      // Check if Genre with same name already exists.
       BreadBrand.findOne({
         title: req.body.title,
       }).exec(function (err, found_same_bread) {
@@ -191,11 +188,62 @@ exports.breadbrand_delete_post = function (req, res, next) {
 };
 
 // Display Bread brand update form on GET.
-exports.breadbrand_update_get = function (req, res) {
-  res.send("NOT IMPLEMENTED: Bread brand update GET");
+exports.breadbrand_update_get = function (req, res, next) {
+  BreadBrand.findById(req.params.id).exec(function (err, results) {
+    if (err) {
+      return next(err);
+    }
+    res.render("breadbrand_form", {
+      title: "Update a brand of bread!",
+      breadbrand: results,
+    });
+  });
 };
 
 // Handle Bread brand update on POST.
-exports.breadbrand_update_post = function (req, res) {
-  res.send("NOT IMPLEMENTED: Bread brand update POST");
-};
+exports.breadbrand_update_post = [
+  // Validate and santize the name field.
+  body("title", "Need a proper bread brand name")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("description", "A proper description of the brand must be placed")
+    .trim()
+    .escape(),
+  body("password", "A proper password must be set").trim().escape(),
+  // Process request after validation and sanitization.
+  (req, res, next) => {
+    // Extract the validation errors from a request.
+    const errors = validationResult(req);
+    // Create a genre object with escaped and trimmed data.
+    var breadbrand = new BreadBrand({
+      _id: req.params.id,
+      title: req.body.title,
+      description: req.body.description,
+    });
+
+    if (!errors.isEmpty() || req.body.password !== password) {
+      // There are errors. Render the form again with sanitized values/error messages.
+      res.render("breadbrand_form", {
+        title: "Update your bread!",
+        breadbrand: breadbrand,
+        errors: errors.array(),
+      });
+    } else {
+      // Data from form is valid.
+      BreadBrand.findByIdAndUpdate(
+        req.params.id,
+        breadbrand,
+        {},
+        function (err, thebrand) {
+          if (err) {
+            return next(err);
+          }
+
+          // Successful - redirect to book detail page.
+          res.redirect(thebrand.url);
+        }
+      );
+    }
+  },
+];

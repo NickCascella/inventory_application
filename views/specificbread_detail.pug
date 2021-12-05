@@ -9,3 +9,7 @@ block content
   hr
   p
     a(href=specificbread.url+'/delete') Delete bread
+  p
+    a(href=specificbread.url+'/update') Update bread
+  form(method='POST' action=`/catalog/specificbread/${specificbread._id}/addtocart`)
+    button.btn.btn-primary(type='submit') Add to cart
