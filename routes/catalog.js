@@ -5,7 +5,19 @@ var router = express.Router();
 var breadbrand_controller = require("../controllers/breadbrandController");
 var specificbread_controller = require("../controllers/specificbreadController");
 var shoppingcart_controller = require("../controllers/shoppingcartController");
-/// BOOK ROUTES ///
+var multer = require("multer");
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./public/images");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+var upload = multer({
+  storage: storage,
+  limits: { fileSize: 500000 },
+});
 
 // GET catalog home page.
 router.get("/", breadbrand_controller.index);
@@ -14,7 +26,11 @@ router.get("/", breadbrand_controller.index);
 router.get("/breadbrand/create", breadbrand_controller.breadbrand_create_get);
 
 // POST request for creating breadbrand.
-router.post("/breadbrand/create", breadbrand_controller.breadbrand_create_post);
+router.post(
+  "/breadbrand/create",
+  upload.single("image"),
+  breadbrand_controller.breadbrand_create_post
+);
 
 // GET request to delete breadbrand.
 router.get(
@@ -37,6 +53,7 @@ router.get(
 // POST request to update breadbrand.
 router.post(
   "/breadbrand/:id/update",
+  upload.single("image"),
   breadbrand_controller.breadbrand_update_post
 );
 

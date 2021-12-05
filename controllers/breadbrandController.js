@@ -93,11 +93,13 @@ exports.breadbrand_create_post = [
   // Process request after validation and sanitization.
   (req, res, next) => {
     // Extract the validation errors from a request.
+
     const errors = validationResult(req);
     // Create a genre object with escaped and trimmed data.
     var breadbrand = new BreadBrand({
       title: req.body.title,
       description: req.body.description,
+      img: req.file.filename,
     });
 
     if (!errors.isEmpty() || req.body.password !== password) {
@@ -203,10 +205,7 @@ exports.breadbrand_update_get = function (req, res, next) {
 // Handle Bread brand update on POST.
 exports.breadbrand_update_post = [
   // Validate and santize the name field.
-  body("title", "Need a proper bread brand name")
-    .trim()
-    .isLength({ min: 1 })
-    .escape(),
+  body("title", "Need a proper bread brand name").trim().escape(),
   body("description", "A proper description of the brand must be placed")
     .trim()
     .escape(),
@@ -224,6 +223,7 @@ exports.breadbrand_update_post = [
 
     if (!errors.isEmpty() || req.body.password !== password) {
       // There are errors. Render the form again with sanitized values/error messages.
+      console.log(breadbrand);
       res.render("breadbrand_form", {
         title: "Update your bread!",
         breadbrand: breadbrand,
@@ -239,7 +239,6 @@ exports.breadbrand_update_post = [
           if (err) {
             return next(err);
           }
-
           // Successful - redirect to book detail page.
           res.redirect(thebrand.url);
         }

@@ -1,3 +1,3 @@
-const password = "Test12345";
+const password = "123";
 
 module.exports = password;
