@@ -12,4 +12,5 @@ block content
   p
     a(href=specificbread.url+'/update') Update bread
   form(method='POST' action=`/catalog/specificbread/${specificbread._id}/addtocart`)
+    input(type='number' name='quantity' min='1' max=`${specificbread.quantity}`)
     button.btn.btn-primary(type='submit') Add to cart

@@ -4,6 +4,9 @@ const CartItem = require("../models/cartitems");
 const password = require("../password");
 const { body, validationResult } = require("express-validator");
 var async = require("async");
+const fs = require("fs");
+const { promisify } = require("util");
+const unlinkAsync = promisify(fs.unlink);
 
 // Display list of all Breads.
 exports.specificbread_list = function (req, res, next) {
@@ -64,15 +67,26 @@ exports.specificbread_create_get = function (req, res) {
 exports.specificbread_create_post = [
   // Validate and santize the name field.
   body("type", "Bread type required").trim().isLength({ min: 1 }).escape(),
-  body("details", "A description for the bread must be set").trim().escape(),
-  body("quantity", "An amount must be set").trim().escape(),
-  body("price", "A price must be set").trim().escape(),
-  body("weight", "A weight must be set, in grams").trim().escape(),
+  body("details", "A description for the bread must be set")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("quantity", "Availible amount of stock must be set (min: 1, max: 100)")
+    .trim()
+    .isInt({ min: 1, max: 100 })
+    .escape(),
+  body("price", "A price must be set")
+    .trim()
+    .isFloat({ min: 1, max: 1000000 })
+    .escape(),
+  body("weight", "A weight must be set, in grams")
+    .trim()
+    .isInt({ min: 1, max: 10000 })
+    .escape(),
   body("moreInfo", "A proper url must be set")
     .optional({ checkFalsy: true })
     .trim()
     .escape(),
-  body("password", "A proper password must be set").trim().escape(),
   // Process request after validation and sanitization.
   (req, res, next) => {
     // Extract the validation errors from a request.
@@ -95,7 +109,7 @@ exports.specificbread_create_post = [
       moreInfo: req.body.moreInfo,
     });
 
-    if (!errors.isEmpty() || req.body.password !== password) {
+    if (!errors.isEmpty()) {
       // There are errors. Render the form again with sanitized values/error messages.
 
       BreadBrand.find().exec(function (err, breadbrand) {
@@ -165,37 +179,38 @@ exports.specificbread_delete_get = function (req, res, next) {
 };
 
 // Handle Specific bread delete on POST.
-exports.specificbread_delete_post = function (req, res, next) {
-  body("password", "A proper password must be set").trim().escape();
-  SpecificBread.findById(req.params.id)
-    .populate("brand")
-    .exec(function (err, results) {
-      if (err) {
-        return next(err);
-      }
-      if (req.body.password === password) {
-        SpecificBread.findByIdAndRemove(
-          req.body.specificbreadid,
-          function deleteSpecificBread(err) {
-            if (err) {
-              return next(err);
+exports.specificbread_delete_post = [
+  body("password", "Incorrect password").trim().escape().equals(password),
+  (req, res, next) => {
+    SpecificBread.findById(req.params.id)
+      .populate("brand")
+      .exec(function (err, results) {
+        if (err) {
+          return next(err);
+        }
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+          res.render("specificbread_delete", {
+            title: `Unable to delete bread: ${results.brand.title} - ${results.type}`,
+            specificbread: results,
+            errors: errors,
+          });
+          return;
+        } else {
+          SpecificBread.findByIdAndRemove(
+            req.body.specificbreadid,
+            function deleteSpecificBread(err) {
+              if (err) {
+                return next(err);
+              }
+              res.redirect("/catalog/specificbreads");
             }
-            // Success - go to author list
-            res.redirect("/catalog/specificbreads");
-          }
-        );
-      } else {
-        const errors = {
-          incorrectPassword: "Incorrect Password",
-        };
-        res.render("specificbread_delete", {
-          title: "Delete this bread.",
-          specificbread: results,
-          errors: errors,
-        });
-      }
-    });
-};
+          );
+        }
+      });
+  },
+];
 
 // Display Specific bread update form on GET.
 exports.specificbread_update_get = function (req, res) {
@@ -242,15 +257,27 @@ exports.specificbread_update_get = function (req, res) {
 exports.specificbread_update_post = [
   // Validate and santize the name field.
   body("type", "Bread type required").trim().isLength({ min: 1 }).escape(),
-  body("details", "A description for the bread must be set").trim().escape(),
-  body("quantity", "An amount must be set").trim().escape(),
-  body("price", "A price must be set").trim().escape(),
-  body("weight", "A weight must be set, in grams").trim().escape(),
+  body("details", "A description for the bread must be set")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("quantity", "Availible amount of stock must be set (min: 1, max: 100)")
+    .trim()
+    .isInt({ min: 1, max: 100 })
+    .escape(),
+  body("price", "A price must be set (min: $1.00, max: $1,000,000.00)")
+    .trim()
+    .isFloat({ min: 1, max: 1000000 })
+    .escape(),
+  body("weight", "A weight must be set, in grams")
+    .trim()
+    .isInt({ min: 1, max: 10000 })
+    .escape(),
   body("moreInfo", "A proper url must be set")
     .optional({ checkFalsy: true })
     .trim()
     .escape(),
-  body("password", "A proper password must be set").trim().escape(),
+  body("password", "Incorrect password").trim().escape().equals(password),
   // Process request after validation and sanitization.
   (req, res, next) => {
     // Extract the validation errors from a request.
@@ -273,7 +300,7 @@ exports.specificbread_update_post = [
       moreInfo: req.body.moreInfo,
     });
 
-    if (!errors.isEmpty() || req.body.password !== password) {
+    if (!errors.isEmpty()) {
       // There are errors. Render the form again with sanitized values/error messages.
       BreadBrand.find().exec(function (err, breadbrand) {
         if (err) {
@@ -288,7 +315,7 @@ exports.specificbread_update_post = [
           }
         });
         res.render("specificbread_form", {
-          title: "Update your bread!",
+          title: "Issue with updating that bread..",
           specificbread: specificbread,
           brandnames: arrayForSpecificBreadBrands,
           errors: errors.array(),
@@ -315,45 +342,56 @@ exports.specificbread_update_post = [
 exports.specificbread_add_to_cart = function (req, res, next) {
   const cartitem = new CartItem({
     item: req.params.id,
-    quantity: 1,
+    quantity: req.body.quantity,
   });
 
   CartItem.find({ item: req.params.id }).exec(function (err1, duplicate) {
-    if (duplicate.length === 0) {
-      cartitem.save(function (err, success) {
-        if (err) {
-          return next(err);
-        }
-        CartItem.find()
-          .populate({
-            path: "item",
-            populate: {
-              path: "brand",
-            },
-          })
-          .exec(function (error, results) {
-            if (error) {
-              return next(error);
-            }
-            res.render("shoppingcart", { shoppingcart: results });
-          });
-      });
+    if (err1) {
+      return next(err1);
     }
-    CartItem.find()
-      .populate({
-        path: "item",
-        populate: {
-          path: "brand",
+    if (duplicate.length === 0) {
+      async.series(
+        {
+          cartitem: function (callback) {
+            cartitem.save(callback);
+          },
+          loadcart: function (callback) {
+            CartItem.find()
+              .populate({
+                path: "item",
+                populate: {
+                  path: "brand",
+                },
+              })
+              .exec(callback);
+          },
         },
-      })
-      .exec(function (error, results) {
-        if (error) {
-          return next(error);
+        function (err, results) {
+          if (err) {
+            return next(err);
+          }
+          res.render(`shoppingcart`, {
+            shoppingcart: results.loadcart,
+          });
         }
-        res.render("shoppingcart", {
-          shoppingcart: results,
+      );
+    } else {
+      CartItem.find()
+        .populate({
+          path: "item",
+          populate: {
+            path: "brand",
+          },
+        })
+        .exec(function (error, results) {
+          if (error) {
+            return next(error);
+          }
+          res.render("shoppingcart", {
+            shoppingcart: results,
+          });
         });
-      });
+    }
   });
 };
 
