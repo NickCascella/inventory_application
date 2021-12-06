@@ -3,6 +3,9 @@ var SpecificBread = require("../models/specificbreads");
 const password = require("../password");
 const { body, validationResult } = require("express-validator");
 var async = require("async");
+const fs = require("fs");
+const { promisify } = require("util");
+const unlinkAsync = promisify(fs.unlink);
 
 exports.index = function (req, res) {
   async.parallel(
@@ -88,21 +91,27 @@ exports.breadbrand_create_post = [
   body("description", "A description for the bread must be set")
     .trim()
     .escape(),
-  body("password", "A proper password must be set").trim().escape(),
-
+  body("password", "A proper password must be set")
+    .trim()
+    .escape()
+    .equals(password),
   // Process request after validation and sanitization.
   (req, res, next) => {
     // Extract the validation errors from a request.
 
     const errors = validationResult(req);
     // Create a genre object with escaped and trimmed data.
+
     var breadbrand = new BreadBrand({
       title: req.body.title,
       description: req.body.description,
-      img: req.file.filename,
     });
 
-    if (!errors.isEmpty() || req.body.password !== password) {
+    if (req.file) {
+      breadbrand.img = req.file.filename;
+    }
+
+    if (!errors.isEmpty()) {
       // There are errors. Render the form again with sanitized values/error messages.
       res.render("breadbrand_form", {
         title: "I think there was a mistake..?",
@@ -118,7 +127,6 @@ exports.breadbrand_create_post = [
         if (err) {
           return next(err);
         }
-
         if (found_same_bread) {
           // Bread exists, redirect to its detail page.
           res.redirect(found_same_bread.url);
@@ -155,39 +163,50 @@ exports.breadbrand_delete_get = function (req, res, next) {
 };
 
 // Handle Bread brand delete on POST.
-exports.breadbrand_delete_post = function (req, res, next) {
-  body("password", "A proper password must be set").trim().escape();
-  if (req.body.password === password) {
-    async.parallel(
-      {
-        breadbrand: function (callback) {
-          BreadBrand.findByIdAndRemove(req.body.breadbrandid).exec(callback);
-        },
+exports.breadbrand_delete_post = [
+  body("password", "Incorrect Password").trim().escape().equals(password),
+  (req, res, next) => {
+    const errors = validationResult(req);
 
-        specificbread: function (callback) {
-          SpecificBread.deleteMany({ brand: req.body.breadbrandid }).exec(
-            callback
-          );
-        },
-      },
-      function (err, results) {
-        if (err) {
-          return next(err);
-        }
-        res.redirect("/catalog/breadbrands");
+    BreadBrand.findById(req.params.id).exec((err, resultsOne) => {
+      if (err) {
+        return next(err);
       }
-    );
-  } else {
-    const errors = {
-      incorrectPassword: "Incorrect Password",
-    };
-    res.render("breadbrand_delete", {
-      title: "Unable to delete",
-      breadbrand: results,
-      errors: errors,
+
+      if (!errors.isEmpty()) {
+        res.render("breadbrand_delete", {
+          title: "Unable to delete",
+          breadbrand: resultsOne,
+          errors: errors.array(),
+        });
+        return;
+      }
+
+      if (resultsOne.img) {
+        unlinkAsync(`./public/images/${resultsOne.img}`);
+      }
+
+      async.parallel(
+        {
+          breadbrand: function (callback) {
+            BreadBrand.findByIdAndRemove(req.body.breadbrandid).exec(callback);
+          },
+          specificbread: function (callback) {
+            SpecificBread.deleteMany({ brand: req.body.breadbrandid }).exec(
+              callback
+            );
+          },
+        },
+        function (err, results) {
+          if (err) {
+            return next(err);
+          }
+          res.redirect("/catalog/breadbrands");
+        }
+      );
     });
-  }
-};
+  },
+];
 
 // Display Bread brand update form on GET.
 exports.breadbrand_update_get = function (req, res, next) {
@@ -209,21 +228,25 @@ exports.breadbrand_update_post = [
   body("description", "A proper description of the brand must be placed")
     .trim()
     .escape(),
-  body("password", "A proper password must be set").trim().escape(),
+  body("password", "Incorrect password").trim().escape().equals(password),
   // Process request after validation and sanitization.
   (req, res, next) => {
     // Extract the validation errors from a request.
     const errors = validationResult(req);
     // Create a genre object with escaped and trimmed data.
+
     var breadbrand = new BreadBrand({
       _id: req.params.id,
       title: req.body.title,
       description: req.body.description,
     });
 
-    if (!errors.isEmpty() || req.body.password !== password) {
+    if (req.file !== undefined) {
+      breadbrand.img = req.file.filename;
+    }
+
+    if (!errors.isEmpty()) {
       // There are errors. Render the form again with sanitized values/error messages.
-      console.log(breadbrand);
       res.render("breadbrand_form", {
         title: "Update your bread!",
         breadbrand: breadbrand,
@@ -231,18 +254,25 @@ exports.breadbrand_update_post = [
       });
     } else {
       // Data from form is valid.
-      BreadBrand.findByIdAndUpdate(
-        req.params.id,
-        breadbrand,
-        {},
-        function (err, thebrand) {
-          if (err) {
-            return next(err);
-          }
-          // Successful - redirect to book detail page.
-          res.redirect(thebrand.url);
+      BreadBrand.findById(req.params.id).exec(function (err, result) {
+        if (err) {
+          return nexr(err);
         }
-      );
+        if (result.img && req.file) {
+          unlinkAsync(`./public/images/${result.img}`);
+        }
+        BreadBrand.findByIdAndUpdate(
+          req.params.id,
+          breadbrand,
+          {},
+          function (err, thebrand) {
+            if (err) {
+              return next(err);
+            }
+            res.redirect(thebrand.url);
+          }
+        );
+      });
     }
   },
 ];
