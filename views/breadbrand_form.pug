@@ -11,9 +11,10 @@ block content
       input#description.form-control(type='text' placeholder='At Dempster’s®, the values that shape our great country are the same values we put into each and every one of our products. For us...' name='description' required='true' value=(undefined===breadbrand ? '' : breadbrand.description))
       label(for="image")
       input#image(type='file' name="image")
-      label(for='password') Password:
-      input#title.form-control(type='password' name='password' required='true' )
-
+      - if(passwordNeeded === true)
+        label(for='password') Password:
+        input#title.form-control(type='password' name='password' required='true')
+      
     button.btn.btn-primary(type='submit') Submit
 
   if errors

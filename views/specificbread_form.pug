@@ -33,10 +33,13 @@ block content
       input#quantity.form-control(type='number', placeholder='30, 20, 55, etc...' name='quantity' required='true' min='0' max='100' value=(undefined===specificbread ? '' : specificbread.quantity))
       label(for='instock') Item availible for sale?:
       input#instock.form-control(type='checkbox' name='instock' checked=(undefined===specificbread ? false : specificbread.instock))
+      label(for="image")
+      input#image(type='file' name="image")
       label(for='moreInfo') More Information URL?:
       input#brand.form-control(type='text' placeholder='https://dempsters.ca/products/wheat-grain-bread... ' name='moreInfo' value=(undefined===specificbread ? '' : specificbread.moreInfo))
-      //- label(for='password') Password:
-      //- input#password.form-control(type='password' name='password' required="true")
+      - if(passwordNeeded === true)
+        label(for='password') Password:
+        input#password.form-control(type='password' name='password' required="true")
 
     button.btn.btn-primary(type='submit') Submit
 

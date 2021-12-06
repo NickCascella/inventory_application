@@ -74,6 +74,7 @@ router.get(
 // POST request for creating specificbread.
 router.post(
   "/specificbread/create",
+  upload.single("image"),
   specificbread_controller.specificbread_create_post
 );
 
@@ -108,6 +109,7 @@ router.get(
 // POST request to update specificbread.
 router.post(
   "/specificbread/:id/update",
+  upload.single("image"),
   specificbread_controller.specificbread_update_post
 );
 

@@ -58,6 +58,7 @@ exports.specificbread_create_get = function (req, res) {
 
     res.render("specificbread_form", {
       title: "Add a bread to a brand!",
+      passwordNeeded: false,
       brandnames: arrayForSpecificBreadBrands,
     });
   });
@@ -109,6 +110,10 @@ exports.specificbread_create_post = [
       moreInfo: req.body.moreInfo,
     });
 
+    if (req.file) {
+      specificbread.img = req.file.filename;
+    }
+
     if (!errors.isEmpty()) {
       // There are errors. Render the form again with sanitized values/error messages.
 
@@ -128,6 +133,7 @@ exports.specificbread_create_post = [
           title: "Add your bread!",
           specificbread: specificbread,
           brandnames: arrayForSpecificBreadBrands,
+          passwordNeeded: false,
           errors: errors.array(),
         });
       });
@@ -173,6 +179,7 @@ exports.specificbread_delete_get = function (req, res, next) {
       // Successful, so render.
       res.render("specificbread_delete", {
         title: "Delete this bread.",
+        passwordNeeded: true,
         specificbread: results,
       });
     });
@@ -190,10 +197,15 @@ exports.specificbread_delete_post = [
         }
         const errors = validationResult(req);
 
+        if (results.img) {
+          unlinkAsync(`./public/images/${results.img}`);
+        }
+
         if (!errors.isEmpty()) {
           res.render("specificbread_delete", {
             title: `Unable to delete bread: ${results.brand.title} - ${results.type}`,
             specificbread: results,
+            passwordNeeded: true,
             errors: errors,
           });
           return;
@@ -247,6 +259,7 @@ exports.specificbread_update_get = function (req, res) {
       res.render("specificbread_form", {
         title: "Update your bread!",
         specificbread: results.specificbread,
+        passwordNeeded: true,
         brandnames: arrayForSpecificBreadBrands,
       });
     }
@@ -300,6 +313,10 @@ exports.specificbread_update_post = [
       moreInfo: req.body.moreInfo,
     });
 
+    if (req.file !== undefined) {
+      specificbread.img = req.file.filename;
+    }
+
     if (!errors.isEmpty()) {
       // There are errors. Render the form again with sanitized values/error messages.
       BreadBrand.find().exec(function (err, breadbrand) {
@@ -318,6 +335,7 @@ exports.specificbread_update_post = [
           title: "Issue with updating that bread..",
           specificbread: specificbread,
           brandnames: arrayForSpecificBreadBrands,
+          passwordNeeded: true,
           errors: errors.array(),
         });
       });

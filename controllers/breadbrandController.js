@@ -81,6 +81,7 @@ exports.breadbrand_detail = function (req, res) {
 exports.breadbrand_create_get = function (req, res) {
   res.render("breadbrand_form", {
     title: "Add a brand of bread!",
+    passwordNeeded: false,
   });
 };
 
@@ -91,10 +92,6 @@ exports.breadbrand_create_post = [
   body("description", "A description for the bread must be set")
     .trim()
     .escape(),
-  body("password", "A proper password must be set")
-    .trim()
-    .escape()
-    .equals(password),
   // Process request after validation and sanitization.
   (req, res, next) => {
     // Extract the validation errors from a request.
@@ -116,6 +113,7 @@ exports.breadbrand_create_post = [
       res.render("breadbrand_form", {
         title: "I think there was a mistake..?",
         breadbrand: breadbrand,
+        passwordNeeded: false,
         errors: errors.array(),
       });
       return;
@@ -157,6 +155,7 @@ exports.breadbrand_delete_get = function (req, res, next) {
     // Successful, so render.
     res.render("breadbrand_delete", {
       title: "Delete this brand?",
+      passwordNeeded: true,
       breadbrand: results,
     });
   });
@@ -177,6 +176,7 @@ exports.breadbrand_delete_post = [
         res.render("breadbrand_delete", {
           title: "Unable to delete",
           breadbrand: resultsOne,
+          passwordNeeded: true,
           errors: errors.array(),
         });
         return;
@@ -216,6 +216,7 @@ exports.breadbrand_update_get = function (req, res, next) {
     }
     res.render("breadbrand_form", {
       title: "Update a brand of bread!",
+      passwordNeeded: true,
       breadbrand: results,
     });
   });
@@ -250,6 +251,7 @@ exports.breadbrand_update_post = [
       res.render("breadbrand_form", {
         title: "Update your bread!",
         breadbrand: breadbrand,
+        passwordNeeded: true,
         errors: errors.array(),
       });
     } else {
