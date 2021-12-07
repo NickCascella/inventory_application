@@ -1,5 +1,125 @@
-.sidebar-nav {
-  margin-top: 20px;
+@import url("https://fonts.googleapis.com/css2?family=Cookie&family=MonteCarlo&family=Raleway:wght@300&display=swap");
+
+html {
+  background-color: rgb(243, 234, 182);
+  height: 100vh;
+}
+
+/*
+===========
+NAV BOTTOM
+===========
+*/
+
+.nav {
   padding: 0;
   list-style: none;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+
+  margin: 0 auto;
+}
+
+.nav li {
+  margin: 5px 10px;
+}
+
+.nav li a {
+  font-family: "Raleway", sans-serif;
+  font-family: "MonteCarlo", cursive;
+  text-decoration: none;
+  color: black;
+  font-size: 30px;
+  padding: 0 20px;
+  border-bottom: 2px solid rgb(161, 153, 105);
+  transition: opacity 0.3s ease-in-out;
+}
+
+.nav li :hover {
+  opacity: 0.5;
+  transform: scale(1.1);
+}
+
+/*
+===========
+NAV TOP
+DEFAULT RENDERING BELOW
+===========
+*/
+
+.link {
+  text-decoration: underline;
+  color: black;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.link:hover {
+  opacity: 0.5;
+  transform: scale(1.1);
+}
+
+.rendered-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  width: 80%;
+  margin: 0 auto;
+  max-width: 1400px;
+}
+
+h1,
+h2 {
+  font-family: "MonteCarlo", cursive;
+}
+
+/*
+===========
+DEFAULT RENDERING ABOVE
+HOME PAGE BELOW
+===========
+*/
+
+.paragraph {
+  max-width: 500px;
+  text-align: center;
+}
+
+/*
+===========
+HOME PAGE ABOVE
+BRAND DETAILS BELOW
+===========
+*/
+
+.brand-logo {
+  height: 180px;
+  width: 180px;
+  border-radius: 50%;
+  margin-top: 30px;
+}
+
+.breads-list {
+  overflow-y: auto;
+  max-height: 400px;
+}
+
+.breads-list::-webkit-scrollbar {
+  background: rgb(218, 218, 218);
+  border-radius: 5px;
+}
+
+.breads-list::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background: rgb(226, 187, 15);
+}
+
+.change-buttons {
+  margin-right: auto;
+}
+
+.change-btns {
+  text-decoration: none;
 }

@@ -2,23 +2,27 @@ extends layout
 
 block content
 
-  h1 Brand: #{breadbrand.title}
+  //- h1 #{breadbrand.title}
 
-  div(style='margin-left:20px;margin-top:20px')
+  img(src=`/images/${breadbrand.img}` alt='Brand Logo' class='brand-logo')
 
-    h4 Breads carried here
+  div
 
-    dl
-      each bread in specificbreads
-        dt
-          a(href=bread.url) #{bread.type}
-        dd #{bread.details}
+    h2 Breads by #{breadbrand.title} that we carry
+    div(class='breads-list')
+      dl
+        each bread in specificbreads
+          dt
+            a(href=bread.url class="link") #{bread.type}
+            p #{bread.details}
 
-      else
-        p There are no breads associated with this brand
+        else
+          p We do not yet carry any breads with #{breadbrand.title}
   
   hr
-  p
-    a(href=breadbrand.url+'/delete') Delete bread
-  p
-    a(href=breadbrand.url+'/update') Update bread
+  div(class='change-buttons')
+    p
+      a(href=breadbrand.url+'/update' class='link change-btns') Update #{breadbrand.title} +
+    p
+      a(href=breadbrand.url+'/delete' class='link change-btns') Delete #{breadbrand.title} -
+  

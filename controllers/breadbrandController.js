@@ -19,7 +19,7 @@ exports.index = function (req, res) {
     },
     function (err, results) {
       res.render("index", {
-        title: "Bread.",
+        title: "Nick's Bread's",
         error: err,
         data: results,
       });
@@ -45,7 +45,7 @@ exports.breadbrand_list = function (req, res) {
 };
 
 // Display detail page for a specific Bread brand.
-exports.breadbrand_detail = function (req, res) {
+exports.breadbrand_detail = function (req, res, next) {
   // Display detail page for a specific Bread brand.
   async.parallel(
     {
@@ -68,6 +68,9 @@ exports.breadbrand_detail = function (req, res) {
         return next(err);
       }
       // Successful, so render
+      if (!results.breadbrand.img) {
+        results.breadbrand.img = "default-brand-logo.jpg";
+      }
       res.render("breadbrand_detail", {
         title: "Bread Brand Details",
         breadbrand: results.breadbrand,
