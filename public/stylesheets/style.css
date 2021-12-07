@@ -17,7 +17,7 @@ NAV BOTTOM
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
-
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -25,7 +25,7 @@ NAV BOTTOM
   margin: 5px 10px;
 }
 
-.nav li a {
+.nav-link {
   font-family: "Raleway", sans-serif;
   font-family: "MonteCarlo", cursive;
   text-decoration: none;
@@ -34,11 +34,20 @@ NAV BOTTOM
   padding: 0 20px;
   border-bottom: 2px solid rgb(161, 153, 105);
   transition: opacity 0.3s ease-in-out;
+  height: 50px;
+  width: 200px;
 }
 
-.nav li :hover {
+.nav-shopping-cart {
+  border-bottom: none;
+}
+
+.nav li a img {
+  height: 50px;
+}
+
+.nav-link :hover {
   opacity: 0.5;
-  transform: scale(1.1);
 }
 
 /*
@@ -52,6 +61,9 @@ DEFAULT RENDERING BELOW
   text-decoration: underline;
   color: black;
   transition: opacity 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out;
+  font-size: 18px;
+  font-weight: bold;
 }
 
 .link:hover {
@@ -122,4 +134,52 @@ BRAND DETAILS BELOW
 
 .change-btns {
   text-decoration: none;
+}
+
+.logo-mini {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+}
+
+.items-list {
+  text-decoration: none;
+  list-style: none;
+  padding: 0;
+}
+
+.items-list li {
+  margin-bottom: 30px;
+}
+
+.items-list-img-title {
+  display: flex;
+  align-items: center;
+}
+
+.items-list-img-title a {
+  margin-left: 15px;
+  text-decoration: none;
+}
+
+.cart-input {
+  background: none;
+  border: none;
+  border-bottom: 1px solid black;
+  margin-right: 10px;
+}
+
+.btn {
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid black;
+  background: white;
+  transition: background 0.3s ease-in-out;
+  transition: color 0.2s ease-in-out;
+}
+
+.btn:hover {
+  cursor: pointer;
+  background: burlywood;
+  color: white;
 }

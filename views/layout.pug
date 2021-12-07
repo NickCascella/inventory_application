@@ -15,17 +15,18 @@ html(lang='en')
         block sidebar
           ul(class='nav')
             li
-              a(href='/catalog') Home
+              a(href='/catalog' class='nav-link') Home
             li
-              a(href='/catalog/breadbrands') Bread Brands
+              a(href='/catalog/breadbrands' class='nav-link') Bread Brands
             li
-              a(href='/catalog/specificbreads') Bread Types
+              a(href='/catalog/specificbreads' class='nav-link') Bread Types
             li
-              a(href='/catalog/shoppingcart') Shopping Cart
+              a(href='/catalog/breadbrand/create' class='nav-link') + Bread Brand
             li
-              a(href='/catalog/breadbrand/create') + Bread Brand
+              a(href='/catalog/specificbread/create' class='nav-link') + Bread Type
             li
-              a(href='/catalog/specificbread/create') + Bread Type
+              a(href='/catalog/shoppingcart' class="nav-link nav-shopping-cart")
+                img(src='/images/shopping-cart.png' )
 
       div(class='rendered-page')
         block content

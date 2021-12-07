@@ -1,13 +1,17 @@
 extends layout
 
 block content
-  h1= title
+  div
+    h1= title
+    div(class='breads-list')
+      ul(class='items-list')
+        each brand in breadbrand_list
+          li
+            div(class='items-list-img-title')
+              img(src=`/images/${brand.img}` class='logo-mini' )
+              a(href=brand.url class='link') #{brand.title}
+            p #{brand.description}
+            
 
-  ul
-    each brand in breadbrand_list
-      li
-        a(href=brand.url) #{brand.title}
-        |  #{brand.description}
-
-    else
-      li There are no brands of bread :(
+        else
+          li We carry no bread.

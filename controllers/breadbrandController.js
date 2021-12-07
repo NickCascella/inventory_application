@@ -38,7 +38,7 @@ exports.breadbrand_list = function (req, res) {
       //Successful, so render
 
       res.render("breadbrand_list", {
-        title: "List of bread brands",
+        title: "Brands Offered Here",
         breadbrand_list: list_breadbrands,
       });
     });

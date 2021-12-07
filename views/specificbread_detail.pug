@@ -1,16 +1,32 @@
 extends layout
 
 block content
-  h1= title
+  
+  img(src=`/images/${specificbread.img}` alt='Bread Logo' class='brand-logo')
+ 
+  div
+    h1= `${specificbread.type} - ${specificbread.brand.title}`
+    div(class='breads-list')
+      ul(class='items-list')
+        li Description
+          p #{specificbread.details}
+        li Item Size
+          p #{specificbread.weight}g
+        li Price
+          p $ #{specificbread.price} CAD
+        if specificbread.instock 
+          li Unit(s) availible for sale
+            p #{specificbread.quantity}
+        else 
+          li Item currently not availible for purchase
+    form(method='POST' action=`/catalog/specificbread/${specificbread._id}/addtocart`)
+      input(type='number' name='quantity' min='1' max=`${specificbread.quantity}` required class="cart-input" value='1')
+      button.btn.btn-primary(type='submit' class='btn') Add to cart
+  
+  div(class='change-buttons')
+    p
+      a(href=specificbread.url+'/update' class='link change-btns') + Update #{specificbread.brand.title} - #{specificbread.type}
+    p
+      a(href=specificbread.url+'/delete' class='link change-btns') - Remove #{specificbread.brand.title} - #{specificbread.type}
 
-  h2= `${specificbread.type}`
-  p This bread is #{specificbread.details}
 
-  hr
-  p
-    a(href=specificbread.url+'/delete') Delete bread
-  p
-    a(href=specificbread.url+'/update') Update bread
-  form(method='POST' action=`/catalog/specificbread/${specificbread._id}/addtocart`)
-    input(type='number' name='quantity' min='1' max=`${specificbread.quantity}`)
-    button.btn.btn-primary(type='submit') Add to cart

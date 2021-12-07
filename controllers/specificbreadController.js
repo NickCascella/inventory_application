@@ -33,6 +33,9 @@ exports.specificbread_detail = function (req, res) {
       if (err) {
         return next(err);
       }
+      if (!specificbread.img) {
+        specificbread.img = "default-bread-logo.jpg";
+      }
       // Successful, so render
       res.render("specificbread_detail", {
         title: "Your chosen bread",
@@ -175,6 +178,9 @@ exports.specificbread_delete_get = function (req, res, next) {
       if (results === null) {
         // No results.
         res.redirect("/catalog/specificbreads");
+      }
+      if (!results.img) {
+        results.img = "default-brand-logo.jpg";
       }
       // Successful, so render.
       res.render("specificbread_delete", {

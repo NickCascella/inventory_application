@@ -7,8 +7,7 @@ block content
   img(src=`/images/${breadbrand.img}` alt='Brand Logo' class='brand-logo')
 
   div
-
-    h2 Breads by #{breadbrand.title} that we carry
+    h1 Breads by #{breadbrand.title} that we carry
     div(class='breads-list')
       dl
         each bread in specificbreads
@@ -22,7 +21,7 @@ block content
   hr
   div(class='change-buttons')
     p
-      a(href=breadbrand.url+'/update' class='link change-btns') Update #{breadbrand.title} +
+      a(href=breadbrand.url+'/update' class='link change-btns') + Update #{breadbrand.title} 
     p
-      a(href=breadbrand.url+'/delete' class='link change-btns') Delete #{breadbrand.title} -
+      a(href=breadbrand.url+'/delete' class='link change-btns') - Remove #{breadbrand.title}
   
