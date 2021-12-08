@@ -214,3 +214,16 @@ BRAND DETAILS BELOW
 .submit {
   margin: 10px auto;
 }
+
+.shopping-list {
+  width: 80%;
+}
+
+.shopping-cart-item {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  align-items: center;
+  width: 100%;
+  background: burlywood;
+}

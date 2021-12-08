@@ -1,5 +1,3 @@
-const SpecificBread = require("../models/specificbreads");
-const BreadBrand = require("../models/breadbrands");
 const CartItem = require("../models/cartitems");
 
 exports.view_cart = function (req, res, next) {
@@ -15,6 +13,17 @@ exports.view_cart = function (req, res, next) {
       if (err) {
         return next(err);
       }
-      res.render("shoppingcart", { shoppingcart: results });
+      let grandTotal = 0;
+      results.forEach((bread) => {
+        if (!bread.img) {
+          bread.img = "default-bread-logo.jpg";
+        }
+        bread.itemTotal = bread.quantity * bread.item.price;
+        grandTotal += bread.itemTotal;
+      });
+      res.render("shoppingcart", {
+        shoppingcart: results,
+        grandTotal: grandTotal,
+      });
     });
 };

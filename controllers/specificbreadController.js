@@ -17,6 +17,11 @@ exports.specificbread_list = function (req, res, next) {
       if (err) {
         return next(err);
       }
+      list_specificbreads.forEach((bread) => {
+        if (!bread.img) {
+          bread.img = "default-bread-logo.jpg";
+        }
+      });
 
       res.render("specificbread_list", {
         title: "All of our breads!",
@@ -26,22 +31,39 @@ exports.specificbread_list = function (req, res, next) {
 };
 
 // Display detail page for a specific Bread.
-exports.specificbread_detail = function (req, res) {
-  SpecificBread.findById({ _id: req.params.id })
-    .populate("brand")
-    .exec(function (err, specificbread) {
+exports.specificbread_detail = function (req, res, next) {
+  async.series(
+    {
+      specificbread: function (callback) {
+        SpecificBread.findById({ _id: req.params.id })
+          .populate("brand")
+          .exec(callback);
+      },
+      cartItem: function (callback) {
+        CartItem.find({ item: req.params.id })
+          .populate({
+            path: "item",
+            populate: {
+              path: "brand",
+            },
+          })
+          .exec(callback);
+      },
+    },
+    function (err, results) {
       if (err) {
         return next(err);
       }
-      if (!specificbread.img) {
-        specificbread.img = "default-bread-logo.jpg";
+      if (!results.specificbread.img) {
+        results.specificbread.img = "default-bread-logo.jpg";
       }
-      // Successful, so render
       res.render("specificbread_detail", {
         title: "Your chosen bread",
-        specificbread: specificbread,
+        specificbread: results.specificbread,
+        inCart: results.cartItem[0],
       });
-    });
+    }
+  );
 };
 
 // Display Specific bread create form on GET.
@@ -355,7 +377,6 @@ exports.specificbread_update_post = [
           if (err) {
             return next(err);
           }
-          // Successful - redirect to book detail page.
           res.redirect(thebread.url);
         }
       );
@@ -373,49 +394,77 @@ exports.specificbread_add_to_cart = function (req, res, next) {
     if (err1) {
       return next(err1);
     }
-    if (duplicate.length === 0) {
-      async.series(
-        {
-          cartitem: function (callback) {
-            cartitem.save(callback);
-          },
-          loadcart: function (callback) {
-            CartItem.find()
-              .populate({
-                path: "item",
-                populate: {
-                  path: "brand",
-                },
-              })
-              .exec(callback);
-          },
-        },
-        function (err, results) {
-          if (err) {
-            return next(err);
+    if (duplicate.length !== 0) {
+      CartItem.findOneAndDelete({ item: req.params.id }).exec(
+        (err2, resultsTwo) => {
+          if (err2) {
+            return next(err2);
           }
-          res.render(`shoppingcart`, {
-            shoppingcart: results.loadcart,
-          });
+          cartitem._id = duplicate[0]._id;
         }
       );
-    } else {
-      CartItem.find()
-        .populate({
-          path: "item",
-          populate: {
-            path: "brand",
-          },
-        })
-        .exec(function (error, results) {
-          if (error) {
-            return next(error);
-          }
-          res.render("shoppingcart", {
-            shoppingcart: results,
-          });
-        });
     }
+    async.series(
+      {
+        cartitem: function (callback) {
+          cartitem.save(callback);
+        },
+        loadcart: function (callback) {
+          CartItem.find()
+            .populate({
+              path: "item",
+              populate: {
+                path: "brand",
+              },
+            })
+            .exec(callback);
+        },
+      },
+      function (err, results) {
+        if (err) {
+          return next(err);
+        }
+        let grandTotal = 0;
+        results.loadcart.forEach((item) => {
+          if (!item.img) {
+            item.img = "default-bread-logo.jpg";
+          }
+          item.itemTotal = item.quantity * item.item.price;
+          grandTotal += item.itemTotal;
+        });
+
+        res.render(`shoppingcart`, {
+          shoppingcart: results.loadcart,
+          grandTotal: grandTotal,
+        });
+      }
+    );
+    // } else {
+    //   CartItem.find()
+    //     .populate({
+    //       path: "item",
+    //       populate: {
+    //         path: "brand",
+    //       },
+    //     })
+    //     .exec(function (error, results) {
+    //       if (error) {
+    //         return next(error);
+    //       }
+    //       let grandTotal = 0;
+    //       results.forEach((item) => {
+    //         if (!item.img) {
+    //           item.img = "default-bread-logo.jpg";
+    //         }
+    //         item.itemTotal = item.quantity * item.item.price;
+    //         grandTotal += item.itemTotal;
+    //       });
+    //       res.render("shoppingcart", {
+    //         shoppingcart: results,
+    //         grandTotal: grandTotal,
+    //       });
+    //     });
+    // }
   });
 };
 
@@ -440,8 +489,18 @@ exports.specificbread_remove_from_cart = function (req, res, next) {
       if (err) {
         return next(err);
       }
+      let grandTotal = 0;
+      results.updatedshoppingcart.forEach((item) => {
+        if (!item.img) {
+          item.img = "default-bread-logo.jpg";
+        }
+        item.itemTotal = item.quantity * item.item.price;
+        grandTotal += item.itemTotal;
+      });
+      console.log(grandTotal);
       res.render("shoppingcart", {
         shoppingcart: results.updatedshoppingcart,
+        grandTotal: grandTotal,
       });
     }
   );

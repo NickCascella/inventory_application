@@ -2,18 +2,16 @@ extends layout
 
 block content
   h1 #{title}: #{breadbrand.title}
-
-  
-  
-    
+  img(src=`/images/${breadbrand.img}` class='logo-mini' )
   form(method='POST' action='' class="form")
-    p Do you really want to delete this brand and all its associated breads?
+    p Do you really want to delete #[i #{breadbrand.title}] and all its associated breads?
     label(for='password') Password
     input#password(type='password' name='password' required="true")
     //- input#breadbrandid(type='hidden',name='breadbrandid', required='true', value=breadbrand._id )
     button(class='btn submit')(type='submit') Delete
     
   if errors
+    p Please note the following issues with your request.
     ul
       for error in errors
         li!= error.msg

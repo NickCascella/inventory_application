@@ -1,17 +1,28 @@
 extends layout
 
 
+
 block content
   h1= title
 
-  ul
+  ul(class='items-list shopping-list')
     each product in shoppingcart
-      li
-        a(href=product.item.url) #{product.item.brand.title} 
-        |  #{product.item.type}
-        input(type="number" value=`${product.quantity}` min=`0` max=`${product.item.quantity}` )
+      li(class='shopping-cart-item')
+        img(src=`/images/${product.img}` alt="Bread picture" class='logo-mini' )
+        a(href=product.item.url) #{product.item.brand.title} - #{product.item.type}
+        div
+          label(for='quantity') qty: #{product.quantity}
+          //- input(type="number" name='quantity' value=`${product.quantity}` min=`0` max=`${product.item.quantity}` )
+        div
+          span Price per
+          span $#{product.item.price}
+        div
+          span Item total $#{product.itemTotal}
         form(method='POST' action=`/catalog/specificbread/${product._id}/removefromcart`)
             button(type="submit") Remove from cart
-
+     
     else
       li There are no items in the shopping cart :(
+    p Total: $#{grandTotal}
+    
+

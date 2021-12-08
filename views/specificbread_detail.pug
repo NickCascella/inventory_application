@@ -20,8 +20,12 @@ block content
         else 
           li #[b Item currently not availible for purchase]
     form(method='POST' action=`/catalog/specificbread/${specificbread._id}/addtocart`)
-      input(type='number' name='quantity' min='1' max=`${specificbread.quantity}` required class="cart-input" value='1')
-      button.btn.btn-primary(type='submit' class='btn') Add to cart
+      input(type='number' name='quantity' min='1' max=`${specificbread.quantity}` required class="cart-input" value=(inCart === undefined ? '1' : inCart.quantity))
+      if inCart === undefined
+        button.btn.btn-primary(type='submit' class='btn') Add to cart
+      else
+        button.btn.btn-primary(type='submit' class='btn') Update cart
+      
   
   div(class='change-buttons')
     p
