@@ -19,6 +19,9 @@ block content
             p #[i #{specificbread.quantity}]
         else 
           li #[b Item currently not availible for purchase]
+        if specificbread.moreInfo
+          li #[b Additonal information can be found] 
+            a(href=specificbread.moreInfo target="blank" class='link') here
     if specificbread.instock === true
       form(method='POST' action=`/catalog/specificbread/${specificbread._id}/addtocart`)
         input(type='number' name='quantity' min='1' max=`${specificbread.quantity}` required class="cart-input" value=(inCart === undefined ? '1' : inCart.quantity))

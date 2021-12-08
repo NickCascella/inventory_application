@@ -28,13 +28,13 @@ block content
       input#weight(type='number', placeholder='675, 300, 500, etc...' name='weight' required='true' min='1' max='9999' value=(undefined===specificbread ? '' : specificbread.weight))
       label(for='price') Price per unit, in CAD
       input#price(type='number' step="0.01" placeholder='3.00, 5.25, 2.90, etc...' name='price' required='true' min='1' max='1000000' value=(undefined===specificbread ? '' : price))
-      label(for='quantity') How much is in stock?
+      label(for='quantity') How many units is in stock?
       input#quantity(type='number', placeholder='30, 20, 55, etc...' name='quantity' required='true' min='0' max='100' value=(undefined===specificbread ? '' : specificbread.quantity))
       label(for='instock') Item availible for sale?
       input#instock(type='checkbox' name='instock' checked=(undefined===specificbread ? false : specificbread.instock))
       label(for="image") Reference picture? (optional)
       input#image(type='file' name="image" class='imgupload')
-      label(for='moreInfo')  More Information URL?
+      label(for='moreInfo')  More Information URL? (optional)
       input#brand(type='text' placeholder='https://dempsters.ca/products/wheat-grain-bread... ' name='moreInfo' value=(undefined===specificbread ? '' : specificbread.moreInfo))
       - if(passwordNeeded === true)
           label(for='password') Password

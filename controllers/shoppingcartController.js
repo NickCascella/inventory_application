@@ -14,12 +14,14 @@ exports.view_cart = function (req, res, next) {
         return next(err);
       }
       let grandTotal = 0;
+      let grandTotalNoFormat = 0;
       results.forEach((bread) => {
-        if (!bread.img) {
-          bread.img = "default-bread-logo.jpg";
+        if (!bread.item.img) {
+          bread.item.img = "default-bread-logo.jpg";
         }
         bread.itemTotal = bread.quantity * bread.item.price;
-        grandTotal += bread.itemTotal;
+        grandTotalNoFormat += bread.itemTotal;
+        grandTotal = grandTotalNoFormat.toFixed(2);
       });
       res.render("shoppingcart", {
         shoppingcart: results,

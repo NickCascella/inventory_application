@@ -8,19 +8,14 @@ block content
   ul(class='items-list shopping-list breads-list')
     each product in shoppingcart
       li(class='shopping-cart-item')
-        img(src=`/images/${product.img}` alt="Bread picture" class='logo-mini' )
+        img(src=`/images/${product.item.img}` alt="Bread picture" class='logo-mini' )
         a(href=product.item.url class="link") #{product.item.brand.title} - #{product.item.type}
         div
-          span #[i Qty] #{product.quantity}
-        //- input(type="number" name='quantity' value=`${product.quantity}` min=`0` max=`${product.item.quantity}` )
-        //- div
-        //-   span 
-        //-   span $#{product.item.price}
+          span #[i Qty] #[b #{product.quantity}]
         div
-          span #[i Amt] $#{product.itemTotal}
+          span #[i Amt] #[b $#{product.itemTotalFormatted}]
         form(method='POST' action=`/catalog/specificbread/${product._id}/removefromcart`)
             button(type="submit" class="btn") Remove
-     
     else
       div(class='empty_list') There are no items in your shopping cart :(
   if grandTotal > 0

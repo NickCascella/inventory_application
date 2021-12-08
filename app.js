@@ -7,12 +7,11 @@ var logger = require("morgan");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var catalogRouter = require("./routes/catalog"); //Import routes for "catalog" area of site
-
+require("dotenv").config();
 var app = express();
 //Set up mongoose connection
 var mongoose = require("mongoose");
-var mongoDB =
-  "mongodb+srv://Nick:12345678!@cluster0.l2ujq.mongodb.net/inventory_data?retryWrites=true&w=majority";
+var mongoDB = process.env.database;
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));

@@ -1,3 +1,3 @@
-const password = "123";
-
+require("dotenv").config();
+const password = process.env.password;
 module.exports = password;
