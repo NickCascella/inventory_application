@@ -20,6 +20,7 @@ exports.view_cart = function (req, res, next) {
           bread.item.img = "default-bread-logo.jpg";
         }
         bread.itemTotal = bread.quantity * bread.item.price;
+        bread.itemTotalFormatted = bread.itemTotal.toFixed(2);
         grandTotalNoFormat += bread.itemTotal;
         grandTotal = grandTotalNoFormat.toFixed(2);
       });

@@ -448,7 +448,6 @@ exports.specificbread_add_to_cart = function (req, res, next) {
           }
 
           item.itemTotal = item.quantity * item.item.price;
-          let a = item.itemTotal.toFixed(2);
           item.itemTotalFormatted = item.itemTotal.toFixed(2);
 
           console.log(item.itemTotalFormatted);
@@ -485,13 +484,18 @@ exports.specificbread_remove_from_cart = function (req, res, next) {
       if (err) {
         return next(err);
       }
+      let grandTotalNoFormat = 0;
       let grandTotal = 0;
       results.updatedshoppingcart.forEach((item) => {
-        if (!item.img) {
-          item.img = "default-bread-logo.jpg";
+        if (!item.item.img) {
+          item.item.img = "default-bread-logo.jpg";
         }
         item.itemTotal = item.quantity * item.item.price;
-        grandTotal += item.itemTotal;
+        item.itemTotalFormatted = item.itemTotal.toFixed(2);
+
+        console.log(item.itemTotalFormatted);
+        grandTotalNoFormat += item.itemTotal;
+        grandTotal = grandTotalNoFormat.toFixed(2);
       });
       console.log(grandTotal);
       res.render("shoppingcart", {
