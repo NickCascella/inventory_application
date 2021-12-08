@@ -200,7 +200,7 @@ exports.breadbrand_delete_post = [
             );
           },
         },
-        function (err, results) {
+        function (err) {
           if (err) {
             return next(err);
           }

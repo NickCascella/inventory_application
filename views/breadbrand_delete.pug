@@ -3,15 +3,15 @@ extends layout
 block content
   h1 #{title}: #{breadbrand.title}
 
+  
+  
+    
+  form(method='POST' action='' class="form")
     p Do you really want to delete this brand and all its associated breads?
-
-    form(method='POST' action='')
-      label(for='password') Password:
-      input#password.form-control(type='password' name='password' required="true")
-      div.form-group
-        input#breadbrandid.form-control(type='hidden',name='breadbrandid', required='true', value=breadbrand._id )
-
-      button.btn.btn-primary(type='submit') Delete
+    label(for='password') Password
+    input#password(type='password' name='password' required="true")
+    //- input#breadbrandid(type='hidden',name='breadbrandid', required='true', value=breadbrand._id )
+    button(class='btn submit')(type='submit') Delete
     
   if errors
     ul

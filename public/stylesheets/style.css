@@ -183,3 +183,34 @@ BRAND DETAILS BELOW
   background: burlywood;
   color: white;
 }
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form * {
+  margin-top: 10px;
+}
+
+.form label {
+  font-style: italic;
+}
+
+.form input {
+  background: none;
+  border: none;
+  border-bottom: 1px solid black;
+}
+
+.form input:focus {
+  outline: none;
+}
+
+.imgupload {
+  border-bottom: none !important;
+}
+
+.submit {
+  margin: 10px auto;
+}

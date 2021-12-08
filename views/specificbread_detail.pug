@@ -8,17 +8,17 @@ block content
     h1= `${specificbread.type} - ${specificbread.brand.title}`
     div(class='breads-list')
       ul(class='items-list')
-        li Description
-          p #{specificbread.details}
-        li Item Size
-          p #{specificbread.weight}g
-        li Price
-          p $ #{specificbread.price} CAD
+        li #[b Description]
+          p #[i #{specificbread.details}]
+        li #[b Item Size]
+          p #[i #{specificbread.weight}g]
+        li #[b Price]
+          p #[i $#{specificbread.price} CAD]
         if specificbread.instock 
-          li Unit(s) availible for sale
-            p #{specificbread.quantity}
+          li #[b Unit(s) availible for sale]
+            p #[i #{specificbread.quantity}]
         else 
-          li Item currently not availible for purchase
+          li #[b Item currently not availible for purchase]
     form(method='POST' action=`/catalog/specificbread/${specificbread._id}/addtocart`)
       input(type='number' name='quantity' min='1' max=`${specificbread.quantity}` required class="cart-input" value='1')
       button.btn.btn-primary(type='submit' class='btn') Add to cart
