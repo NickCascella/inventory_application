@@ -3,7 +3,7 @@ const BreadBrand = require("../models/breadbrands");
 const CartItem = require("../models/cartitems");
 const password = require("../password");
 const { body, validationResult } = require("express-validator");
-var async = require("async");
+const async = require("async");
 const fs = require("fs");
 const { promisify } = require("util");
 const unlinkAsync = promisify(fs.unlink);
@@ -22,9 +22,8 @@ exports.specificbread_list = function (req, res, next) {
           bread.img = "default-bread-logo.jpg";
         }
       });
-
       res.render("specificbread_list", {
-        title: "All of our breads!",
+        title: "All of our breads",
         specificbreads_list: list_specificbreads,
       });
     });
@@ -57,6 +56,7 @@ exports.specificbread_detail = function (req, res, next) {
       if (!results.specificbread.img) {
         results.specificbread.img = "default-bread-logo.jpg";
       }
+
       res.render("specificbread_detail", {
         title: "Your chosen bread",
         specificbread: results.specificbread,
@@ -82,7 +82,7 @@ exports.specificbread_create_get = function (req, res) {
     });
 
     res.render("specificbread_form", {
-      title: "Add a bread to a brand!",
+      title: "Add a bread to a brand",
       passwordNeeded: false,
       brandnames: arrayForSpecificBreadBrands,
     });
@@ -135,7 +135,7 @@ exports.specificbread_create_post = [
       moreInfo: req.body.moreInfo,
     });
 
-    if (req.file) {
+    if (req.file !== undefined) {
       specificbread.img = req.file.filename;
     }
 
@@ -155,7 +155,7 @@ exports.specificbread_create_post = [
           }
         });
         res.render("specificbread_form", {
-          title: "Add your bread!",
+          title: "Add your bread",
           specificbread: specificbread,
           brandnames: arrayForSpecificBreadBrands,
           passwordNeeded: false,
@@ -202,11 +202,11 @@ exports.specificbread_delete_get = function (req, res, next) {
         res.redirect("/catalog/specificbreads");
       }
       if (!results.img) {
-        results.img = "default-brand-logo.jpg";
+        results.img = "default-bread-logo.jpg";
       }
       // Successful, so render.
       res.render("specificbread_delete", {
-        title: "Delete this bread.",
+        title: "Delete this bread?",
         passwordNeeded: true,
         specificbread: results,
       });
@@ -225,7 +225,11 @@ exports.specificbread_delete_post = [
         }
         const errors = validationResult(req);
 
-        if (results.img) {
+        if (
+          results.img &&
+          results.img !== "default-brand-logo.jpg" &&
+          results.img !== "default-bread-logo.jpg"
+        ) {
           unlinkAsync(`./public/images/${results.img}`);
         }
 
@@ -239,7 +243,7 @@ exports.specificbread_delete_post = [
           return;
         } else {
           SpecificBread.findByIdAndRemove(
-            req.body.specificbreadid,
+            req.params.id,
             function deleteSpecificBread(err) {
               if (err) {
                 return next(err);
@@ -284,9 +288,12 @@ exports.specificbread_update_get = function (req, res) {
           arrayForSpecificBreadBrands.push(breadbrand);
         }
       });
+      let priceInt = parseInt(results.specificbread.price);
+      console.log(results.specificbread);
       res.render("specificbread_form", {
-        title: "Update your bread!",
+        title: "Update your bread",
         specificbread: results.specificbread,
+        price: priceInt,
         passwordNeeded: true,
         brandnames: arrayForSpecificBreadBrands,
       });
@@ -359,27 +366,36 @@ exports.specificbread_update_post = [
             arrayForSpecificBreadBrands.push(breadbrand);
           }
         });
+        const priceInt = parseInt(specificbread.price);
         res.render("specificbread_form", {
-          title: "Issue with updating that bread..",
+          title: "Unable to update bread",
           specificbread: specificbread,
           brandnames: arrayForSpecificBreadBrands,
+          price: priceInt,
           passwordNeeded: true,
           errors: errors.array(),
         });
       });
     } else {
-      // Data from form is valid.
-      SpecificBread.findByIdAndUpdate(
-        req.params.id,
-        specificbread,
-        {},
-        function (err, thebread) {
-          if (err) {
-            return next(err);
-          }
-          res.redirect(thebread.url);
+      SpecificBread.findById(req.params.id).exec(function (err, result) {
+        if (err) {
+          return next(err);
         }
-      );
+        if (result.img && req.file) {
+          unlinkAsync(`./public/images/${result.img}`);
+        }
+        SpecificBread.findByIdAndUpdate(
+          req.params.id,
+          specificbread,
+          {},
+          function (err, thebread) {
+            if (err) {
+              return next(err);
+            }
+            res.redirect(thebread.url);
+          }
+        );
+      });
     }
   },
 ];
@@ -439,32 +455,6 @@ exports.specificbread_add_to_cart = function (req, res, next) {
         });
       }
     );
-    // } else {
-    //   CartItem.find()
-    //     .populate({
-    //       path: "item",
-    //       populate: {
-    //         path: "brand",
-    //       },
-    //     })
-    //     .exec(function (error, results) {
-    //       if (error) {
-    //         return next(error);
-    //       }
-    //       let grandTotal = 0;
-    //       results.forEach((item) => {
-    //         if (!item.img) {
-    //           item.img = "default-bread-logo.jpg";
-    //         }
-    //         item.itemTotal = item.quantity * item.item.price;
-    //         grandTotal += item.itemTotal;
-    //       });
-    //       res.render("shoppingcart", {
-    //         shoppingcart: results,
-    //         grandTotal: grandTotal,
-    //       });
-    //     });
-    // }
   });
 };
 

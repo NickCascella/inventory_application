@@ -10,6 +10,7 @@ var SpecificBread = new Schema({
   instock: { type: Boolean, required: true },
   weight: { type: Number, required: true, min: 1 },
   moreInfo: { type: String },
+  img: { type: String },
 });
 // Virtual for individual breads URL
 SpecificBread.virtual("url").get(function () {

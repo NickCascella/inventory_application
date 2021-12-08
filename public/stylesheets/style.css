@@ -1,8 +1,9 @@
-@import url("https://fonts.googleapis.com/css2?family=Cookie&family=MonteCarlo&family=Raleway:wght@300&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant&family=MonteCarlo&family=Raleway:wght@300&display=swap");
 
 html {
   background-color: rgb(243, 234, 182);
   height: 100vh;
+  font-family: "Cormorant", serif;
 }
 
 /*
@@ -46,7 +47,7 @@ NAV BOTTOM
   height: 50px;
 }
 
-.nav-link :hover {
+.nav-link:hover {
   opacity: 0.5;
 }
 
@@ -64,6 +65,7 @@ DEFAULT RENDERING BELOW
   transition: transform 0.3s ease-in-out;
   font-size: 18px;
   font-weight: bold;
+  font-style: italic;
 }
 
 .link:hover {
@@ -115,7 +117,7 @@ BRAND DETAILS BELOW
 
 .breads-list {
   overflow-y: auto;
-  max-height: 400px;
+  max-height: 700px;
 }
 
 .breads-list::-webkit-scrollbar {
@@ -225,5 +227,30 @@ BRAND DETAILS BELOW
   flex-wrap: wrap;
   align-items: center;
   width: 100%;
-  background: burlywood;
+  padding-bottom: 15px;
+  border-bottom: 1px solid black;
+}
+
+.grand-total {
+  font-size: 22px;
+  font-weight: bold;
+  width: max-content;
+  margin-left: 60%;
+}
+
+.empty_list {
+  margin: auto;
+  width: max-content;
+  font-size: 30px;
+  opacity: 0.5;
+}
+
+.error-container {
+}
+
+.error-list {
+  padding: 0;
+  list-style-type: none;
+  font-weight: bold;
+  text-decoration: underline;
 }

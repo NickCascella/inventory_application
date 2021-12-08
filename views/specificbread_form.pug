@@ -3,7 +3,7 @@ extends layout
 block content
   h1 #{title}
 
-  form(method='POST' action='')
+  form(method='POST' action='' enctype="multipart/form-data")
     div(class="form")
       label(for='type') Bread type
       input#type(type='text', placeholder='Whole Wheat, Multi Grain, etc...' name='type' required='true' value=(undefined===specificbread ? '' : specificbread.type))
@@ -27,7 +27,7 @@ block content
       label(for='weight') Weight in grams (as is sold, i.e by piece or entire package)
       input#weight(type='number', placeholder='675, 300, 500, etc...' name='weight' required='true' min='1' max='9999' value=(undefined===specificbread ? '' : specificbread.weight))
       label(for='price') Price per unit, in CAD
-      input#price(type='number' step="0.01" placeholder='3.00, 5.25, 2.90, etc...' name='price' required='true' min='1' max='1000000' value=(undefined===specificbread ? '' : specificbread.price))
+      input#price(type='number' step="0.01" placeholder='3.00, 5.25, 2.90, etc...' name='price' required='true' min='1' max='1000000' value=(undefined===specificbread ? '' : price))
       label(for='quantity') How much is in stock?
       input#quantity(type='number', placeholder='30, 20, 55, etc...' name='quantity' required='true' min='0' max='100' value=(undefined===specificbread ? '' : specificbread.quantity))
       label(for='instock') Item availible for sale?
@@ -43,9 +43,11 @@ block content
       button(type='submit' class="btn submit") Submit
 
   if errors
-   ul
-    for error in errors
-      li!= error.msg
+    div(class='error-container')
+      h2 Please note the following issues with your request
+      ul(class="error-list")
+        for error in errors
+          li!= error.msg
 
 //-       label(for='brand') Brand:
  input#brand.form-control(type='text', placeholder='Dempster\'s, Villaggio, etc... ' name='brand' value=(undefined===specificbread ? '' : specificbread.brand))

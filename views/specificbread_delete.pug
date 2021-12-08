@@ -2,15 +2,30 @@ extends layout
 
 block content
   h1 #{title}: #{specificbread.brand.title} - #{specificbread.type}
-
+  img(src=`/images/${specificbread.img}` class='logo-mini' )
+  form(method='POST' action='' class="form")
     p Do you really want to delete this bread?
+    label(for='password') Password
+    input#password(type='password' name='password' required="true")
+    //- input#breadbrandid(type='hidden',name='breadbrandid', required='true', value=breadbrand._id )
+    button(class='btn submit')(type='submit') Delete
+    
+  if errors
+    div(class='error-container')
+      h2 Please note the following issues with your request
+      ul(class="error-list")
+        for error in errors
+          li!= error.msg
 
-    form(method='POST' action='')
-      label(for='password') Password:
-      if errors !== undefined
-        div #{errors.incorrectPassword}
-      input#password.form-control(type='password' name='password' required="true")
-      div.form-group
-        input#specificbreadid.form-control(type='hidden',name='specificbreadid', required='true', value=specificbread._id )
 
-      button.btn.btn-primary(type='submit') Delete
+
+
+    //- form(method='POST' action='')
+    //-   label(for='password') Password:
+    //-   if errors !== undefined
+    //-     div #{errors.incorrectPassword}
+    //-   input#password.form-control(type='password' name='password' required="true")
+    //-   div.form-group
+    //-     input#specificbreadid.form-control(type='hidden',name='specificbreadid', required='true', value=specificbread._id )
+
+    //-   button.btn.btn-primary(type='submit') Delete

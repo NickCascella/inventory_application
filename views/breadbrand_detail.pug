@@ -8,7 +8,7 @@ block content
 
   div
     h1 Breads by #{breadbrand.title} that we carry
-    div(class='breads-list')
+    div
       dl
         each bread in specificbreads
           dt
@@ -16,7 +16,7 @@ block content
             p #{bread.details}
 
         else
-          p We do not yet carry any breads with #{breadbrand.title}
+          p(class='empty_list') We do not yet carry any breads with #{breadbrand.title}
   
   hr
   div(class='change-buttons')

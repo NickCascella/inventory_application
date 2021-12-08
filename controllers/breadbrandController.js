@@ -36,7 +36,11 @@ exports.breadbrand_list = function (req, res) {
         return next(err);
       }
       //Successful, so render
-
+      list_breadbrands.forEach((brand) => {
+        if (!brand.img) {
+          brand.img = "default-brand-logo.jpg";
+        }
+      });
       res.render("breadbrand_list", {
         title: "Brands Offered Here",
         breadbrand_list: list_breadbrands,
@@ -91,8 +95,15 @@ exports.breadbrand_create_get = function (req, res) {
 // Handle Bread brand create on POST.
 exports.breadbrand_create_post = [
   // Validate and santize the name field.
-  body("title", "Brand name required").trim().isLength({ min: 1 }).escape(),
-  body("description", "A description for the bread must be set")
+  body("title", "Brand name required")
+    .trim()
+    .isLength({ min: 1, max: 25 })
+    .escape(),
+  body(
+    "description",
+    "A description for the bread must be between 1 and 150 characters"
+  )
+    .isLength({ min: 1, max: 150 })
     .trim()
     .escape(),
   // Process request after validation and sanitization.
@@ -114,7 +125,7 @@ exports.breadbrand_create_post = [
     if (!errors.isEmpty()) {
       // There are errors. Render the form again with sanitized values/error messages.
       res.render("breadbrand_form", {
-        title: "I think there was a mistake..?",
+        title: "Unable to add your brand",
         breadbrand: breadbrand,
         passwordNeeded: false,
         errors: errors.array(),
@@ -155,6 +166,9 @@ exports.breadbrand_delete_get = function (req, res, next) {
       // No results.
       res.redirect("/catalog/breadbrands");
     }
+    if (!results.img) {
+      results.img = "default-brand-logo.jpg";
+    }
     // Successful, so render.
     res.render("breadbrand_delete", {
       title: "Delete this brand?",
@@ -174,10 +188,13 @@ exports.breadbrand_delete_post = [
       if (err) {
         return next(err);
       }
+      if (!resultsOne.img) {
+        resultsOne.img = "default-brand-logo.jpg";
+      }
 
       if (!errors.isEmpty()) {
         res.render("breadbrand_delete", {
-          title: "Unable to delete",
+          title: "Unable to delete brand",
           breadbrand: resultsOne,
           passwordNeeded: true,
           errors: errors.array(),
@@ -185,19 +202,21 @@ exports.breadbrand_delete_post = [
         return;
       }
 
-      if (resultsOne.img) {
+      if (
+        resultsOne.img &&
+        resultsOne.img !== "default-brand-logo.jpg" &&
+        resultsOne.img !== "default-bread-logo.jpg"
+      ) {
         unlinkAsync(`./public/images/${resultsOne.img}`);
       }
 
       async.parallel(
         {
           breadbrand: function (callback) {
-            BreadBrand.findByIdAndRemove(req.body.breadbrandid).exec(callback);
+            BreadBrand.findByIdAndRemove(req.params.id).exec(callback);
           },
           specificbread: function (callback) {
-            SpecificBread.deleteMany({ brand: req.body.breadbrandid }).exec(
-              callback
-            );
+            SpecificBread.deleteMany({ brand: req.params.id }).exec(callback);
           },
         },
         function (err) {
@@ -218,7 +237,7 @@ exports.breadbrand_update_get = function (req, res, next) {
       return next(err);
     }
     res.render("breadbrand_form", {
-      title: "Update a brand of bread!",
+      title: "Update a brand of bread",
       passwordNeeded: true,
       breadbrand: results,
     });
@@ -228,9 +247,16 @@ exports.breadbrand_update_get = function (req, res, next) {
 // Handle Bread brand update on POST.
 exports.breadbrand_update_post = [
   // Validate and santize the name field.
-  body("title", "Need a proper bread brand name").trim().escape(),
-  body("description", "A proper description of the brand must be placed")
+  body("title", "Need a proper bread brand name")
+    .isLength({ min: 1, max: 25 })
     .trim()
+    .escape(),
+  body(
+    "description",
+    "A proper description of the brand must be placed that is between 1 and 150 characters"
+  )
+    .trim()
+    .isLength({ min: 1, max: 150 })
     .escape(),
   body("password", "Incorrect password").trim().escape().equals(password),
   // Process request after validation and sanitization.
@@ -238,7 +264,6 @@ exports.breadbrand_update_post = [
     // Extract the validation errors from a request.
     const errors = validationResult(req);
     // Create a genre object with escaped and trimmed data.
-
     var breadbrand = new BreadBrand({
       _id: req.params.id,
       title: req.body.title,
@@ -252,7 +277,7 @@ exports.breadbrand_update_post = [
     if (!errors.isEmpty()) {
       // There are errors. Render the form again with sanitized values/error messages.
       res.render("breadbrand_form", {
-        title: "Update your bread!",
+        title: "Unable to update your brand",
         breadbrand: breadbrand,
         passwordNeeded: true,
         errors: errors.array(),

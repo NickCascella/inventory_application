@@ -18,6 +18,8 @@ block content
       button.btn.btn-primary(type='submit' class="btn submit") Submit
 
   if errors
-    ul
-      for error in errors
-        li!= error.msg
+    div(class='error-container')
+      h2 Please note the following issues with your request
+      ul(class="error-list")
+        for error in errors
+          li!= error.msg
