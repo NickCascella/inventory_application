@@ -2,7 +2,7 @@ extends layout
 
 block content
   h1 #{title}: #{breadbrand.title}
-  img(src=`/images/${breadbrand.img}` class='logo-mini' )
+  img(src=`/images/${breadbrand.img}` class='logo-mini')
   form(method='POST' action='' class="form")
     p Do you really want to delete #[i #{breadbrand.title}] and all its associated breads?
     label(for='password') Password
