@@ -5,18 +5,16 @@ block content
   //- h1 #{breadbrand.title}
 
   img(src=`/images/${breadbrand.img}` alt='Brand Logo' class='brand-logo')
-
+  h1 Breads by #{breadbrand.title} that we carry
   div
-    h1 Breads by #{breadbrand.title} that we carry
-    div
-      dl
-        each bread in specificbreads
-          dt
-            a(href=bread.url class="link") #{bread.type}
-            p #{bread.details}
+    dl
+      each bread in specificbreads
+        dt
+          a(href=bread.url class="link") #{bread.type}
+          p #{bread.details}
 
-        else
-          p(class='empty_list') We do not yet carry any breads with #{breadbrand.title}
+      else
+        p(class='empty_list') We do not yet carry any breads with #{breadbrand.title}
   
   hr
   div(class='change-buttons')

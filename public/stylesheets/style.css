@@ -265,10 +265,9 @@ BRAND DETAILS BELOW
 }
 
 .empty_list {
-  margin: auto;
-  width: max-content;
   font-size: 30px;
   opacity: 0.5;
+  word-wrap: break-word;
 }
 
 .error-list {
