@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  div
+  div(class='list-page')
     h1= title
     div(class='breads-list')
       ul(class='items-list')
@@ -10,7 +10,7 @@ block content
             div(class='items-list-img-title')
               img(src=`/images/${brand.img}` class='logo-mini' )
               a(href=brand.url class='link') #{brand.title}
-            p #{brand.description}
+            p(class='brand-description') #{brand.description}
             
 
         else

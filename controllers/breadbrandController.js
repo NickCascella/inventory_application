@@ -95,13 +95,13 @@ exports.breadbrand_create_get = function (req, res) {
 // Handle Bread brand create on POST.
 exports.breadbrand_create_post = [
   // Validate and santize the name field.
-  body("title", "Brand name required")
+  body("title", "Brand name required - max 25 characters")
     .trim()
     .isLength({ min: 1, max: 25 })
     .escape(),
   body(
     "description",
-    "A description for the bread must be between 1 and 150 characters"
+    "A description for the bread must be set - max 150 characters"
   )
     .isLength({ min: 1, max: 150 })
     .trim()
@@ -247,13 +247,13 @@ exports.breadbrand_update_get = function (req, res, next) {
 // Handle Bread brand update on POST.
 exports.breadbrand_update_post = [
   // Validate and santize the name field.
-  body("title", "Need a proper bread brand name")
+  body("title", "Need a proper bread brand name - max 25 characters")
     .isLength({ min: 1, max: 25 })
     .trim()
     .escape(),
   body(
     "description",
-    "A proper description of the brand must be placed that is between 1 and 150 characters"
+    "A proper description of the brand must be set - max 150 characters"
   )
     .trim()
     .isLength({ min: 1, max: 150 })

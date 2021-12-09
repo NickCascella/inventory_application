@@ -2,7 +2,7 @@ extends layout
 
 block content
   
-  div
+  div(class='list-page')
     h1= title
     div(class='breads-list')
       ul(class='items-list')
@@ -10,7 +10,7 @@ block content
           li
             div(class='items-list-img-title')
               img(src=`/images/${bread.img}` alt="Bread picture" class='logo-mini' )
-              a(href=bread.url class='link') #{bread.type}  - #{bread.brand.title} 
-            p #{bread.details}
+              a(href=bread.url class='link brand-description') #{bread.type}  - #{bread.brand.title} 
+            p(class='brand-description') #{bread.details}
         else
           li We have no kinds of bread in our shop :(

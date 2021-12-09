@@ -5,6 +5,10 @@ html {
   font-family: "Cormorant", serif;
 }
 
+html * {
+  word-wrap: break-word;
+}
+
 /*
 ===========
 NAV BOTTOM
@@ -78,7 +82,7 @@ DEFAULT RENDERING BELOW
   justify-content: center;
   align-items: center;
   font-size: 18px;
-  width: 80%;
+  width: 90%;
   margin: 0 auto;
   max-width: 1400px;
   padding-bottom: 30px;
@@ -108,6 +112,13 @@ BRAND DETAILS BELOW
 ===========
 */
 
+.list-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  width: 100%;
+}
+
 .brand-logo {
   height: 180px;
   width: 180px;
@@ -115,9 +126,14 @@ BRAND DETAILS BELOW
   margin-top: 30px;
 }
 
+.list-title {
+  margin-right: auto;
+}
+
 .breads-list {
   /* overflow-y: auto; */
   /* max-height: 700px; */
+  width: 90%;
 }
 
 .breads-list::-webkit-scrollbar {
@@ -128,6 +144,10 @@ BRAND DETAILS BELOW
 .breads-list::-webkit-scrollbar-thumb {
   border-radius: 5px;
   background: rgb(226, 187, 15);
+}
+
+.brand-description {
+  word-wrap: break-word;
 }
 
 .change-buttons {
@@ -231,6 +251,10 @@ BRAND DETAILS BELOW
   width: 100%;
   padding-bottom: 15px;
   border-bottom: 1px solid black;
+}
+
+.shopping-cart-item * {
+  padding: 10px;
 }
 
 .grand-total {

@@ -92,10 +92,16 @@ exports.specificbread_create_get = function (req, res) {
 // Handle Specific bread create on POST.
 exports.specificbread_create_post = [
   // Validate and santize the name field.
-  body("type", "Bread type required").trim().isLength({ min: 1 }).escape(),
-  body("details", "A description for the bread must be set")
+  body("type", "Bread type required - max 15 characters")
     .trim()
-    .isLength({ min: 1 })
+    .isLength({ min: 1, max: 15 })
+    .escape(),
+  body(
+    "details",
+    "A description for the bread must be set - max 500 characters"
+  )
+    .trim()
+    .isLength({ min: 1, max: 500 })
     .escape(),
   body("quantity", "Availible amount of stock must be set (min: 1, max: 100)")
     .trim()
@@ -304,10 +310,16 @@ exports.specificbread_update_get = function (req, res) {
 // Handle Specific bread update on POST.
 exports.specificbread_update_post = [
   // Validate and santize the name field.
-  body("type", "Bread type required").trim().isLength({ min: 1 }).escape(),
-  body("details", "A description for the bread must be set")
+  body("type", "Bread type required - max 15 characters")
     .trim()
-    .isLength({ min: 1 })
+    .isLength({ min: 1, max: 15 })
+    .escape(),
+  body(
+    "details",
+    "A description for the bread must be set - max 500 characters"
+  )
+    .trim()
+    .isLength({ min: 1, max: 500 })
     .escape(),
   body("quantity", "Availible amount of stock must be set (min: 1, max: 100)")
     .trim()

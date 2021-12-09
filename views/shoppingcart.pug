@@ -10,10 +10,8 @@ block content
       li(class='shopping-cart-item')
         img(src=`/images/${product.item.img}` alt="Bread picture" class='logo-mini' )
         a(href=product.item.url class="link") #{product.item.brand.title} - #{product.item.type}
-        div
-          span #[i Qty] #[b #{product.quantity}]
-        div
-          span #[i Amt] #[b $#{product.itemTotalFormatted}]
+        span #[i Qty] #[b #{product.quantity}]
+        span #[i Amt] #[b $#{product.itemTotalFormatted}]
         form(method='POST' action=`/catalog/specificbread/${product._id}/removefromcart`)
             button(type="submit" class="btn") Remove
     else
